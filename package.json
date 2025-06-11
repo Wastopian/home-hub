@@ -24,6 +24,7 @@
     "@types/react-dom": "^19.1.6",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.16.0",
+    "mqtt": "^5.13.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-scripts": "5.0.1",

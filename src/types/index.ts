@@ -117,6 +117,28 @@ export interface CalendarEvent {
   attendees?: string[];
 }
 
+// Energy Monitoring Types
+export interface EnergyReading {
+  id: string;
+  device: string;
+  power: number;
+  timestamp: Date;
+}
+
+export interface EnergyAlertRule {
+  id: string;
+  device: string;
+  thresholdWatts: number;
+  maxDurationMinutes: number;
+}
+
+export interface EnergyAlert {
+  id: string;
+  device: string;
+  message: string;
+  timestamp: Date;
+}
+
 // Dashboard Types
 export interface DashboardData {
   currentTemperature: TemperatureReading;
@@ -141,6 +163,12 @@ export interface AppState {
   
   // Bills
   bills: Bill[];
+
+  // Energy
+  energyReadings: EnergyReading[];
+  energyRules: EnergyAlertRule[];
+  energyAlerts: EnergyAlert[];
+  energyUsageSessions: Record<string, Date | null>;
   
   // Calendar
   calendarEvents: CalendarEvent[];
@@ -150,7 +178,7 @@ export interface AppState {
   
   // UI State
   selectedRoom: RoomType | 'All';
-  currentView: 'dashboard' | 'climate' | 'projects' | 'maintenance' | 'bills' | 'calendar';
+  currentView: 'dashboard' | 'climate' | 'projects' | 'maintenance' | 'bills' | 'calendar' | 'energy';
 }
 
 export interface AppActions {
@@ -176,6 +204,12 @@ export interface AppActions {
   updateBill: (id: string, updates: Partial<Bill>) => void;
   deleteBill: (id: string) => void;
   markBillAsPaid: (id: string) => void;
+
+  // Energy actions
+  addEnergyReading: (reading: Omit<EnergyReading, 'id'>) => void;
+  addEnergyRule: (rule: Omit<EnergyAlertRule, 'id'>) => void;
+  deleteEnergyRule: (id: string) => void;
+  clearEnergyAlerts: () => void;
   
   // Calendar actions
   addCalendarEvent: (event: Omit<CalendarEvent, 'id'>) => void;

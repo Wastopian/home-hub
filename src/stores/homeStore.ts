@@ -9,13 +9,16 @@ import {
   ClimateSchedule,
   Project, 
   MaintenanceTask, 
-  Bill, 
+  Bill,
   CalendarEvent,
   DashboardData,
   FinancialSummary,
   ProjectStatus,
   TaskStatus,
   BillStatus,
+  EnergyReading,
+  EnergyAlertRule,
+  EnergyAlert,
 } from '../types';
 
 // Sample data for initial setup
@@ -231,6 +234,10 @@ export const useHomeStore = create<Store>()(
         maintenanceTasks: initialData.maintenanceTasks,
         bills: initialData.bills,
         calendarEvents: initialData.calendarEvents,
+        energyReadings: [],
+        energyRules: [],
+        energyAlerts: [],
+        energyUsageSessions: {},
         dashboardData: generateDashboardData(initialData),
         selectedRoom: 'All',
         currentView: 'dashboard',
@@ -459,6 +466,55 @@ export const useHomeStore = create<Store>()(
           });
         },
 
+        // Energy actions
+        addEnergyReading: (reading) => {
+          const newReading: EnergyReading = { ...reading, id: uuidv4() };
+          set(state => {
+            const updatedReadings = [...state.energyReadings, newReading];
+
+            // Check alert rules
+            const alerts: EnergyAlert[] = [];
+            state.energyRules.forEach(rule => {
+              if (rule.device === newReading.device && newReading.power >= rule.thresholdWatts) {
+                const start = state.energyUsageSessions[newReading.device] || newReading.timestamp;
+                const duration = newReading.timestamp.getTime() - start.getTime();
+                if (!state.energyUsageSessions[newReading.device]) {
+                  state.energyUsageSessions[newReading.device] = newReading.timestamp;
+                }
+                if (duration >= rule.maxDurationMinutes * 60 * 1000) {
+                  alerts.push({
+                    id: uuidv4(),
+                    device: newReading.device,
+                    message: `${newReading.device} has been running for over ${rule.maxDurationMinutes} minutes`,
+                    timestamp: newReading.timestamp,
+                  });
+                  state.energyUsageSessions[newReading.device] = newReading.timestamp; // reset session
+                }
+              } else if (rule.device === newReading.device && newReading.power < rule.thresholdWatts) {
+                state.energyUsageSessions[newReading.device] = null;
+              }
+            });
+
+            return {
+              energyReadings: updatedReadings,
+              energyAlerts: alerts.length ? [...state.energyAlerts, ...alerts] : state.energyAlerts,
+            };
+          });
+        },
+
+        addEnergyRule: (rule) => {
+          const newRule: EnergyAlertRule = { ...rule, id: uuidv4() };
+          set(state => ({ energyRules: [...state.energyRules, newRule] }));
+        },
+
+        deleteEnergyRule: (id) => {
+          set(state => ({ energyRules: state.energyRules.filter(r => r.id !== id) }));
+        },
+
+        clearEnergyAlerts: () => {
+          set({ energyAlerts: [] });
+        },
+
         // UI actions
         setSelectedRoom: (room) => {
           set({ selectedRoom: room });
@@ -491,4 +547,7 @@ export const useTemperatureReadings = () => useHomeStore(state => state.temperat
 export const useProjects = () => useHomeStore(state => state.projects);
 export const useMaintenanceTasks = () => useHomeStore(state => state.maintenanceTasks);
 export const useBills = () => useHomeStore(state => state.bills);
-export const useCalendarEvents = () => useHomeStore(state => state.calendarEvents); 
+export const useCalendarEvents = () => useHomeStore(state => state.calendarEvents);
+export const useEnergyReadings = () => useHomeStore(state => state.energyReadings);
+export const useEnergyAlerts = () => useHomeStore(state => state.energyAlerts);
+export const useEnergyRules = () => useHomeStore(state => state.energyRules);
