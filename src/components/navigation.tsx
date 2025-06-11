@@ -17,6 +17,7 @@ import {
   Build,
   Receipt,
   CalendarMonth,
+  Warning,
   Home,
 } from '@mui/icons-material';
 import { useCurrentView, useHomeStore } from '../stores/homeStore';
@@ -50,10 +51,15 @@ const menuItems = [
     label: 'Bills & Finances', 
     icon: <Receipt /> 
   },
-  { 
-    key: 'calendar' as AppState['currentView'], 
-    label: 'Calendar', 
-    icon: <CalendarMonth /> 
+  {
+    key: 'calendar' as AppState['currentView'],
+    label: 'Calendar',
+    icon: <CalendarMonth />
+  },
+  {
+    key: 'threats' as AppState['currentView'],
+    label: 'Threat Monitor',
+    icon: <Warning />
   },
 ];
 

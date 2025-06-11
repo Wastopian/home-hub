@@ -16,7 +16,9 @@ import {
   ProjectStatus,
   TaskStatus,
   BillStatus,
+  ThreatSummary,
 } from '../types';
+import { fetchWeatherAlerts, fetchCrimeReports, fetchPowerOutages, summarizeThreatLevel } from '../services/threatService';
 
 // Sample data for initial setup
 const generateSampleData = () => {
@@ -160,6 +162,7 @@ const generateSampleData = () => {
     maintenanceTasks,
     bills,
     calendarEvents,
+    threatSummaries: [],
   };
 };
 
@@ -231,6 +234,7 @@ export const useHomeStore = create<Store>()(
         maintenanceTasks: initialData.maintenanceTasks,
         bills: initialData.bills,
         calendarEvents: initialData.calendarEvents,
+        threatSummaries: initialData.threatSummaries,
         dashboardData: generateDashboardData(initialData),
         selectedRoom: 'All',
         currentView: 'dashboard',
@@ -475,6 +479,31 @@ export const useHomeStore = create<Store>()(
             dashboardData: generateDashboardData(state),
           });
         },
+
+        fetchThreatSummary: async ({ lat, lon }) => {
+          const weatherAlerts = await fetchWeatherAlerts(lat, lon);
+          const crimeReports = await fetchCrimeReports(lat, lon);
+          const powerOutages = await fetchPowerOutages(lat, lon);
+
+          const level = summarizeThreatLevel({ weatherAlerts, crimeReports, powerOutages });
+
+          const summary: ThreatSummary = {
+            id: uuidv4(),
+            date: new Date(),
+            weatherAlerts,
+            crimeReports,
+            powerOutages,
+            level,
+          };
+
+          set(state => ({
+            threatSummaries: [summary, ...state.threatSummaries].slice(0, 10),
+          }));
+
+          if (level === 'High' || level === 'Severe') {
+            console.log('Storm incoming. Charging batteries. Closing blinds. Cutting irrigation.');
+          }
+        },
       }),
       {
         name: 'home-hub-storage',
@@ -491,4 +520,5 @@ export const useTemperatureReadings = () => useHomeStore(state => state.temperat
 export const useProjects = () => useHomeStore(state => state.projects);
 export const useMaintenanceTasks = () => useHomeStore(state => state.maintenanceTasks);
 export const useBills = () => useHomeStore(state => state.bills);
-export const useCalendarEvents = () => useHomeStore(state => state.calendarEvents); 
+export const useCalendarEvents = () => useHomeStore(state => state.calendarEvents);
+export const useThreatSummaries = () => useHomeStore(state => state.threatSummaries);
