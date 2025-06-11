@@ -50,6 +50,11 @@ A modern, comprehensive home management system built with React, TypeScript, and
 - Event editing and management with full CRUD operations
 - Google Calendar integration framework ready
 
+### 🚨 Localized Threat Monitor ✅
+- Aggregates NOAA alerts, outage reports and nearby crime incidents
+- Summarizes daily threat levels for quick review
+- Hooks into automation routines when severe conditions detected
+
 ## 🎨 Design System
 
 ### Color Palette
@@ -84,6 +89,9 @@ npm start
 ```
 
 The app will open at `http://localhost:3000`
+
+#### Environment Variables
+Set a `CRIME_API_KEY` in a `.env` file to enable crime report lookups for the threat monitor.
 
 ### Build for Production
 ```bash

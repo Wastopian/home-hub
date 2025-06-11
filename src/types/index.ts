@@ -117,6 +117,18 @@ export interface CalendarEvent {
   attendees?: string[];
 }
 
+// Threat Monitoring Types
+export type ThreatLevel = 'Low' | 'Moderate' | 'High' | 'Severe';
+
+export interface ThreatSummary {
+  id: string;
+  date: Date;
+  weatherAlerts: string[];
+  crimeReports: string[];
+  powerOutages: string[];
+  level: ThreatLevel;
+}
+
 // Dashboard Types
 export interface DashboardData {
   currentTemperature: TemperatureReading;
@@ -144,13 +156,16 @@ export interface AppState {
   
   // Calendar
   calendarEvents: CalendarEvent[];
-  
+
   // Dashboard
   dashboardData: DashboardData;
-  
+
+  // Threat Monitoring
+  threatSummaries: ThreatSummary[];
+
   // UI State
   selectedRoom: RoomType | 'All';
-  currentView: 'dashboard' | 'climate' | 'projects' | 'maintenance' | 'bills' | 'calendar';
+  currentView: 'dashboard' | 'climate' | 'projects' | 'maintenance' | 'bills' | 'calendar' | 'threats';
 }
 
 export interface AppActions {
@@ -188,4 +203,8 @@ export interface AppActions {
   
   // Dashboard actions
   refreshDashboard: () => void;
-} 
+
+  // Threat monitoring actions
+  fetchThreatSummary: (location: { lat: number; lon: number }) => Promise<void>;
+}
+
