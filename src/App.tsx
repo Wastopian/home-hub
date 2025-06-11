@@ -10,6 +10,7 @@ import { ProjectTracker } from './components/projectTracker';
 import { MaintenanceSchedule } from './components/maintenanceSchedule';
 import { BillsFinances } from './components/billsFinances';
 import { HomeCalendar } from './components/homeCalendar';
+import { MoodScenes } from './components/moodScenes';
 import { useCurrentView } from './stores/homeStore';
 
 const drawerWidth = 280;
@@ -38,6 +39,8 @@ function App() {
         return <BillsFinances />;
       case 'calendar':
         return <HomeCalendar />;
+      case 'scenes':
+        return <MoodScenes />;
       default:
         return <DashboardOverview />;
     }

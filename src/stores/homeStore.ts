@@ -9,8 +9,9 @@ import {
   ClimateSchedule,
   Project, 
   MaintenanceTask, 
-  Bill, 
+  Bill,
   CalendarEvent,
+  LightingScene,
   DashboardData,
   FinancialSummary,
   ProjectStatus,
@@ -129,6 +130,31 @@ const generateSampleData = () => {
     },
   ];
 
+  // Sample lighting scenes
+  const lightingScenes: LightingScene[] = [
+    {
+      id: uuidv4(),
+      name: 'Romantic',
+      color: '#FFB3B3',
+      brightness: 40,
+      temperature: 72,
+    },
+    {
+      id: uuidv4(),
+      name: 'Focus Mode',
+      color: '#FFFFFF',
+      brightness: 100,
+      temperature: 68,
+    },
+    {
+      id: uuidv4(),
+      name: 'Movie Night',
+      color: '#4040FF',
+      brightness: 20,
+      temperature: 70,
+    },
+  ];
+
   // Sample calendar events
   const calendarEvents: CalendarEvent[] = [
     {
@@ -159,6 +185,7 @@ const generateSampleData = () => {
     projects,
     maintenanceTasks,
     bills,
+    lightingScenes,
     calendarEvents,
   };
 };
@@ -230,6 +257,7 @@ export const useHomeStore = create<Store>()(
         projects: initialData.projects,
         maintenanceTasks: initialData.maintenanceTasks,
         bills: initialData.bills,
+        lightingScenes: initialData.lightingScenes,
         calendarEvents: initialData.calendarEvents,
         dashboardData: generateDashboardData(initialData),
         selectedRoom: 'All',
@@ -459,6 +487,28 @@ export const useHomeStore = create<Store>()(
           });
         },
 
+        // Lighting scene actions
+        addLightingScene: (scene) => {
+          const newScene: LightingScene = { ...scene, id: uuidv4() };
+          set(state => ({
+            lightingScenes: [...state.lightingScenes, newScene],
+          }));
+        },
+
+        updateLightingScene: (id, updates) => {
+          set(state => ({
+            lightingScenes: state.lightingScenes.map(scene =>
+              scene.id === id ? { ...scene, ...updates } : scene
+            ),
+          }));
+        },
+
+        deleteLightingScene: (id) => {
+          set(state => ({
+            lightingScenes: state.lightingScenes.filter(scene => scene.id !== id),
+          }));
+        },
+
         // UI actions
         setSelectedRoom: (room) => {
           set({ selectedRoom: room });
@@ -491,4 +541,5 @@ export const useTemperatureReadings = () => useHomeStore(state => state.temperat
 export const useProjects = () => useHomeStore(state => state.projects);
 export const useMaintenanceTasks = () => useHomeStore(state => state.maintenanceTasks);
 export const useBills = () => useHomeStore(state => state.bills);
-export const useCalendarEvents = () => useHomeStore(state => state.calendarEvents); 
+export const useCalendarEvents = () => useHomeStore(state => state.calendarEvents);
+export const useLightingScenes = () => useHomeStore(state => state.lightingScenes);
