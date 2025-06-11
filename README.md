@@ -50,6 +50,11 @@ A modern, comprehensive home management system built with React, TypeScript, and
 - Event editing and management with full CRUD operations
 - Google Calendar integration framework ready
 
+### ⚡ Power Hog - Energy Monitor
+- MQTT integration for real-time energy readings
+- Live power usage graph with Recharts
+- Custom alert rules ("warn me if dryer runs past 2 hrs")
+
 ## 🎨 Design System
 
 ### Color Palette
