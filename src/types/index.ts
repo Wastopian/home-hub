@@ -117,6 +117,15 @@ export interface CalendarEvent {
   attendees?: string[];
 }
 
+// Lighting Scene Types
+export interface LightingScene {
+  id: string;
+  name: string;
+  color: string; // Hex color value
+  brightness: number; // 0-100 percentage
+  temperature: number; // Fahrenheit
+}
+
 // Dashboard Types
 export interface DashboardData {
   currentTemperature: TemperatureReading;
@@ -141,6 +150,9 @@ export interface AppState {
   
   // Bills
   bills: Bill[];
+
+  // Lighting Scenes
+  lightingScenes: LightingScene[];
   
   // Calendar
   calendarEvents: CalendarEvent[];
@@ -150,7 +162,7 @@ export interface AppState {
   
   // UI State
   selectedRoom: RoomType | 'All';
-  currentView: 'dashboard' | 'climate' | 'projects' | 'maintenance' | 'bills' | 'calendar';
+  currentView: 'dashboard' | 'climate' | 'projects' | 'maintenance' | 'bills' | 'calendar' | 'scenes';
 }
 
 export interface AppActions {
@@ -181,6 +193,11 @@ export interface AppActions {
   addCalendarEvent: (event: Omit<CalendarEvent, 'id'>) => void;
   updateCalendarEvent: (id: string, updates: Partial<CalendarEvent>) => void;
   deleteCalendarEvent: (id: string) => void;
+
+  // Lighting scene actions
+  addLightingScene: (scene: Omit<LightingScene, 'id'>) => void;
+  updateLightingScene: (id: string, updates: Partial<LightingScene>) => void;
+  deleteLightingScene: (id: string) => void;
   
   // UI actions
   setSelectedRoom: (room: RoomType | 'All') => void;

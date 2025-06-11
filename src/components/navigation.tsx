@@ -18,6 +18,7 @@ import {
   Receipt,
   CalendarMonth,
   Home,
+  ColorLens,
 } from '@mui/icons-material';
 import { useCurrentView, useHomeStore } from '../stores/homeStore';
 import { AppState } from '../types';
@@ -50,10 +51,15 @@ const menuItems = [
     label: 'Bills & Finances', 
     icon: <Receipt /> 
   },
-  { 
-    key: 'calendar' as AppState['currentView'], 
-    label: 'Calendar', 
-    icon: <CalendarMonth /> 
+  {
+    key: 'calendar' as AppState['currentView'],
+    label: 'Calendar',
+    icon: <CalendarMonth />
+  },
+  {
+    key: 'scenes' as AppState['currentView'],
+    label: 'Mood Scenes',
+    icon: <ColorLens />
   },
 ];
 
